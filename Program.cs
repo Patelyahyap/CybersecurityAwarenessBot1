@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Media;
-using System.Threading;
+using System.Threading; // Required for Thread.Sleep
 
 namespace CybersecurityAwarenessBot1 // Make sure this matches your project name/folder
 {
@@ -11,22 +11,23 @@ namespace CybersecurityAwarenessBot1 // Make sure this matches your project name
 
         static void Main(string[] args)
         {
-            // --- Initial Setup & Greetings (From Stage 1) ---
+            // --- Initial Setup & Greetings ---
             SetConsoleAppearance();
             PlayGreetingSound();
             DisplayAsciiArt();
-            DisplayDivider(); // Added divider
-
-            // --- User Interaction (New for Stage 2) ---
+            DisplayDivider();
             AskForUserName();
             DisplayWelcomeMessage();
-            DisplayDivider(); // Added divider
+            DisplayDivider();
 
-            // --- Basic Interaction Loop (New skeleton for Stage 2) ---
+            // --- Main Interaction Loop ---
             ChatLoop();
 
-            // --- Farewell (Basic for now) ---
-            Console.WriteLine("\n(Chat finished. Press any key to exit)");
+            // --- Farewell ---
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            SimulatedTyping("\nThank you for chatting! Stay safe online.", 40); // Use simulated typing
+            Console.ResetColor();
+            Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
         }
 
@@ -35,13 +36,14 @@ namespace CybersecurityAwarenessBot1 // Make sure this matches your project name
         static void SetConsoleAppearance()
         {
             Console.Title = "Cybersecurity Awareness Bot";
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.White; // Default text color
+            Console.BackgroundColor = ConsoleColor.Black; // Default background
+            Console.Clear(); // Clear console in case of previous content
         }
 
         static void DisplayAsciiArt()
         {
+            // Example ASCII Art (Replace with your own)
             string asciiArt = @"
    *****************************************
    *       ___ Cybersecurity ___         *
@@ -60,17 +62,27 @@ namespace CybersecurityAwarenessBot1 // Make sure this matches your project name
    *****************************************
 ";
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(asciiArt);
+            SimulatedTyping(asciiArt, 1); // Use simulated typing here too
             Console.ResetColor();
-            Console.WriteLine();
+            Console.WriteLine(); // Add space after art
         }
 
-        // NEW Divider Method
         static void DisplayDivider(char symbol = '=', int length = 50)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine(new string(symbol, length));
             Console.ResetColor();
+        }
+
+        // NEW: Simulated Typing effect
+        static void SimulatedTyping(string message, int delay = 30)
+        {
+            foreach (char c in message)
+            {
+                Console.Write(c);
+                Thread.Sleep(delay); // Pause briefly between characters
+            }
+            Console.WriteLine(); // Move to next line after message
         }
 
         // --- Feature Methods ---
@@ -79,7 +91,7 @@ namespace CybersecurityAwarenessBot1 // Make sure this matches your project name
         {
             try
             {
-                string soundPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Greeting.wav");
+                string soundPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Greeting.wav"); // Ensure correct filename
 
                 if (File.Exists(soundPath))
                 {
@@ -103,44 +115,48 @@ namespace CybersecurityAwarenessBot1 // Make sure this matches your project name
             }
         }
 
-        // NEW: Ask for Name
         static void AskForUserName()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Before we start, could you please tell me your name? "); // Simple Write for now
+            SimulatedTyping("Before we start, could you please tell me your name? ", 40); // Use typing effect
             Console.ResetColor();
+            Console.Write("> "); // Keep prompt on same line
             userName = Console.ReadLine();
 
-            // Basic validation for name (more robust in Stage 3)
-            if (string.IsNullOrWhiteSpace(userName))
+            // Improved Input validation for name
+            while (string.IsNullOrWhiteSpace(userName))
             {
-                userName = "User"; // Default if empty
-                Console.WriteLine("Okay, I'll call you User for now.");
+                Console.ForegroundColor = ConsoleColor.Red;
+                SimulatedTyping("Oops! It looks like you didn't enter a name. Please tell me who I'm talking to.", 40);
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("> ");
+                Console.ResetColor();
+                userName = Console.ReadLine();
             }
-            else
-            {
-                 userName = char.ToUpper(userName[0]) + userName.Substring(1); // Capitalize
-            }
+             // Capitalize first letter for niceness
+            userName = char.ToUpper(userName[0]) + userName.Substring(1);
         }
 
-        // NEW: Display Welcome
         static void DisplayWelcomeMessage()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\nNice to meet you, {userName}!");
-            Console.WriteLine("I am the Cybersecurity Awareness Bot.");
+            SimulatedTyping($"\nNice to meet you, {userName}!", 40); // Use typing effect
+            SimulatedTyping("I am the Cybersecurity Awareness Bot.", 40);
+            SimulatedTyping("My purpose is to provide basic information on staying safe online.", 40);
             Console.ResetColor();
         }
 
-        // --- Main Interaction Logic (Skeleton) ---
+        // --- Main Interaction Logic ---
 
-        // NEW: Basic Chat Loop
         static void ChatLoop()
         {
             string? userInput;
             bool continueChat = true;
 
-            Console.WriteLine("\nHow can I help you today? (Type 'purpose' or 'exit')"); // Basic prompt
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            SimulatedTyping("\nHow can I help you today? You can ask me about my purpose, password safety, phishing, or safe browsing. Type 'help' for options or 'exit' to quit.", 40);
+            Console.ResetColor();
 
             while (continueChat)
             {
@@ -149,39 +165,91 @@ namespace CybersecurityAwarenessBot1 // Make sure this matches your project name
                 Console.ResetColor();
                 userInput = Console.ReadLine();
 
-                if (!string.IsNullOrWhiteSpace(userInput))
+                // Input Validation (Handles empty/null)
+                if (string.IsNullOrWhiteSpace(userInput))
                 {
-                     string processedInput = userInput.ToLower().Trim();
-
-                     if (processedInput == "exit")
-                     {
-                         continueChat = false;
-                     }
-                     else
-                     {
-                         // Basic processing (more in Stage 3)
-                         ProcessUserInput(processedInput);
-                     }
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    SimulatedTyping("Please enter a question or command.", 30);
+                    Console.ResetColor();
+                    continue; // Skip processing and ask again
                 }
-                 // No validation message yet for blank input
+
+                // Process normalized input
+                string processedInput = userInput.ToLower().Trim();
+
+                // Check for exit command first
+                if (processedInput == "exit" || processedInput == "quit" || processedInput == "bye")
+                {
+                    continueChat = false; // Exit the loop
+                }
+                else
+                {
+                    // Process other commands/questions
+                    ProcessUserInput(processedInput);
+                }
+
+                // Add a small delay before next prompt if still chatting
+                if(continueChat) Thread.Sleep(200);
             }
         }
 
-        // NEW: Basic Input Processing
+        // Full Input Processing Logic
         static void ProcessUserInput(string input)
         {
-             Console.ForegroundColor = ConsoleColor.Cyan; // Bot response color
+            Console.ForegroundColor = ConsoleColor.Cyan; // Bot response color
 
-             if (input.Contains("purpose"))
-             {
-                 Console.WriteLine("My purpose is to provide basic awareness about common cybersecurity threats.");
-             }
-             else
-             {
-                 // Placeholder for unrecognised input (improved in Stage 3)
-                 // Console.WriteLine("I didn't understand that yet.");
-             }
-             Console.ResetColor();
+            // Use Contains for more flexible matching
+            if (input.Contains("how are you"))
+            {
+                SimulatedTyping("I'm a bot, so I don't have feelings, but I'm running smoothly! Ready to help you with cybersecurity.", 30);
+            }
+            else if (input.Contains("purpose") || input.Contains("what do you do"))
+            {
+                SimulatedTyping("My purpose is to provide basic awareness about common cybersecurity threats like phishing, weak passwords, and unsafe browsing habits.", 30);
+            }
+            else if (input.Contains("ask you about") || input.Contains("what can i ask") || input.Contains("help") || input.Contains("options"))
+            {
+                SimulatedTyping("You can ask me about:\n" +
+                                "  - Password Safety (tips for strong passwords)\n" +
+                                "  - Phishing (how to recognize phishing attempts)\n" +
+                                "  - Safe Browsing (tips for browsing the web securely)\n" +
+                                "Just type keywords like 'password', 'phishing', or 'browsing'. You can also type 'exit' to quit.", 30);
+            }
+            else if (input.Contains("password") || input.Contains("pass word"))
+            {
+                SimulatedTyping("Password Safety Tips:\n" +
+                                "  - Use strong, unique passwords for different accounts.\n" +
+                                "  - Combine upper/lowercase letters, numbers, and symbols.\n" +
+                                "  - Aim for at least 12 characters.\n" +
+                                "  - Avoid using personal information (birthdays, names).\n" +
+                                "  - Consider using a password manager.", 30);
+            }
+            else if (input.Contains("phishing") || input.Contains("fishing"))
+            {
+                SimulatedTyping("Phishing Awareness:\n" +
+                                "  - Be wary of emails/messages asking for personal info or login details.\n" +
+                                "  - Check the sender's email address carefully.\n" +
+                                "  - Look for typos or grammatical errors.\n" +
+                                "  - Don't click suspicious links or download unknown attachments.\n" +
+                                "  - If unsure, contact the organization directly through official channels.", 30);
+            }
+            else if (input.Contains("safe browsing") || input.Contains("browsing") || input.Contains("internet safety"))
+            {
+                SimulatedTyping("Safe Browsing Tips:\n" +
+                                "  - Keep your browser and operating system updated.\n" +
+                                "  - Use secure HTTPS connections (look for the padlock icon).\n" +
+                                "  - Be cautious about downloading files or clicking pop-ups.\n" +
+                                "  - Use reputable antivirus/anti-malware software.\n" +
+                                "  - Be mindful of information shared on public Wi-Fi.", 30);
+            }
+            else
+            {
+                // Default response for invalid/unsupported input
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                SimulatedTyping("I didn't quite understand that. Could you rephrase? You can type 'help' to see what I can talk about.", 30);
+            }
+
+            Console.ResetColor(); // Reset color after bot response
         }
     }
 }
