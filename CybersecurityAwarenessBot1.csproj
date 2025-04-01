@@ -7,4 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+   <!-- Add this ItemGroup -->
+  <ItemGroup>
+    <None Update="Greeting.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <!-- End of added ItemGroup -->
+
+  <!-- You might need this package for SoundPlayer on non-Windows or newer .NET versions -->
+  <ItemGroup>
+    <PackageReference Include="System.Windows.Extensions" Version="8.0.0" Condition="'$(OS)' != 'Windows_NT'" />
+  </ItemGroup>
+
+
 </Project>
