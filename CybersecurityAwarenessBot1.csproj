@@ -19,6 +19,9 @@
   <ItemGroup>
     <PackageReference Include="System.Windows.Extensions" Version="8.0.0" Condition="'$(OS)' != 'Windows_NT'" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Windows.Extensions" Version="9.0.3" />
+  </ItemGroup>
 
 
 </Project>
