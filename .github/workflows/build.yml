@@ -1,0 +1,58 @@
+# .github/workflows/dotnet.yml
+
+# Display name for the workflow in the GitHub Actions tab
+name: .NET CI Build
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push events for the main branch
+  push:
+    branches: [ main ] # IMPORTANT: Change 'main' if your default branch is 'master' or something else
+
+  # Triggers the workflow on pull request events targeting the main branch
+  pull_request:
+    branches: [ main ] # IMPORTANT: Change 'main' if your default branch is 'master' or something else
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Defines the jobs that will run as part of the workflow
+jobs:
+  build:
+    # Specifies the type of virtual machine to run the job on
+    # 'ubuntu-latest' is a common, efficient choice for .NET builds
+    runs-on: ubuntu-latest
+    # Alternatively, use 'windows-latest' if you have strict Windows dependencies
+    # runs-on: windows-latest
+
+    # Defines the sequence of tasks that make up the job
+    steps:
+    # Step 1: Check out the repository code
+    # Uses the standard 'checkout' action to download your code into the runner
+    - name: Checkout code
+      uses: actions/checkout@v4 # Use latest major version
+
+    # Step 2: Set up the specified .NET SDK version
+    # Uses the standard 'setup-dotnet' action
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        # Specify the .NET version your project targets
+        # IMPORTANT: Change this to match your project (e.g., '6.0.x', '7.0.x')
+        dotnet-version: '8.0.x'
+
+    # Step 3: Restore project dependencies (NuGet packages)
+    # Runs the standard 'dotnet restore' command
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # Step 4: Build the project in Release configuration
+    # Runs the 'dotnet build' command.
+    # '--configuration Release' builds the optimized version.
+    # '--no-restore' skips restoring packages again (already done in previous step).
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    # Optional Step 5: Run tests (if you had any test projects)
+    # - name: Test
+    #   run: dotnet test --no-build --verbosity normal
